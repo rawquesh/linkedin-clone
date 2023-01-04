@@ -227,7 +227,7 @@ function PostalModal(props) {
 						</Header>
 						<SharedContent>
 							<UserInfo>
-								{props.user.photoURL ? <img src={props.user.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />}
+								{props.user?.photoURL ? <img src={props.user?.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />}
 								<span>{props.user.displayName ? props.user.displayName : "Name"}</span>
 							</UserInfo>
 							<Editor>

@@ -245,7 +245,7 @@ function Header(props) {
 						</NavList>
 						<User>
 							<a>
-								{props.user && props.user.photoURL ? <img src={props.user.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />}
+								{props.user && props.user?.photoURL ? <img src={props.user?.photoURL} alt="" /> : <img src="/images/user.svg" alt="" />}
 								<span>
 									Me <img src="/images/down-icon.svg" alt="" />
 								</span>
