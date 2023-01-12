@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import Firebase from "firebase";
 import styled from "styled-components";
 import { postArticleAPI } from "../action";
+import { IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const Container = styled.div`
   position: fixed;
@@ -43,6 +45,7 @@ const Header = styled.div`
     font-weight: 400;
   }
   button {
+    cursor: pointer;
     width: 40px;
     height: 40px;
     min-width: auto;
@@ -100,6 +103,8 @@ const AssetButton = styled.button`
   display: flex;
   align-items: center;
   height: 40px;
+  width: 40px;
+  cursor: pointer;
   min-width: auto;
   margin-right: 8px;
   border-radius: 50%;
@@ -112,23 +117,8 @@ const AssetButton = styled.button`
   }
 `;
 
-const ShareComment = styled.div`
-  padding-left: 8px;
-  margin-right: auto;
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
-  ${AssetButton} {
-    border-radius: 50px;
-    padding: 5px 10px;
-    span {
-      font-size: 16px;
-      font-weight: 600;
-      color: rgba(0, 0, 0, 0.6);
-      padding: 0 5px;
-    }
-  }
-`;
-
 const PostButton = styled.button`
+  cursor: pointer;
   min-width: 60px;
   padding: 0 16px;
   border-radius: 20px;
@@ -146,9 +136,12 @@ const PostButton = styled.button`
 const Editor = styled.div`
   padding: 12px 24px;
   textarea {
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
     width: 100%;
     min-height: 100px;
     resize: none;
+    padding: 10px;
   }
   input {
     width: 100%;
@@ -160,8 +153,30 @@ const Editor = styled.div`
 
 const UploadImage = styled.div`
   text-align: center;
+
   img {
+    margin-top: 10px;
     width: 100%;
+    border: 1px solid rgba(169, 169, 169, 0.5);
+    border-radius: 8px;
+  }
+
+  p {
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 0 10px;
+    border: 1px dashed darkgrey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    label {
+      padding: 10px 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
   }
 `;
 
@@ -257,6 +272,9 @@ function PostalModal(props) {
                       <label htmlFor="imageFile">
                         Select an image to share
                       </label>
+                      <IconButton onClick={() => setImageFile("")}>
+                        <DeleteIcon />
+                      </IconButton>
                     </p>
                     {imageFile && (
                       <img src={URL.createObjectURL(imageFile)} alt="" />
@@ -290,12 +308,6 @@ function PostalModal(props) {
                   <img src="/images/share-video.svg" alt="" />
                 </AssetButton>
               </AttachAsset>
-              <ShareComment>
-                <AssetButton>
-                  <img src="/images/share-comment.svg" alt="" />
-                  <span>Anyone</span>
-                </AssetButton>
-              </ShareComment>
               <PostButton
                 disabled={!editorText ? true : false}
                 onClick={(event) => postArticle(event)}
