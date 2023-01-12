@@ -147,6 +147,7 @@ const SharedActor = styled.div`
 `;
 
 const Description = styled.div`
+  margin-top: 15px;
   padding: 0 16px;
   overflow: hidden;
   font-size: 14px;
@@ -198,13 +199,20 @@ const SocialActions = styled.div`
   margin: 4px 12px;
   min-height: 40px;
   padding-bottom: 5px;
+  gap: 5px;
 
   button {
+    cursor: pointer;
     display: inline-flex;
     align-items: center;
     padding: 8px;
     border: none;
     background: transparent;
+    border-radius: 8px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
 
     span {
       margin-left: 4px;
@@ -333,20 +341,21 @@ function Main(props) {
                     </span>
                   </div>
                 </a>
-                <button>
-                  <img src="/images/ellipses.svg" alt="" />
-                </button>
               </SharedActor>
               <Description>{article.description}</Description>
-              <SharedImage>
-                <a>
-                  {!article.sharedImg && article.video ? (
-                    <ReactPlayer width={"100%"} url={article.video} />
-                  ) : (
-                    article.sharedImg && <img src={article.sharedImg} alt="" />
-                  )}
-                </a>
-              </SharedImage>
+              {(article.sharedImg || article.video) && (
+                <SharedImage>
+                  <a>
+                    {!article.sharedImg && article.video ? (
+                      <ReactPlayer width={"100%"} url={article.video} />
+                    ) : (
+                      article.sharedImg && (
+                        <img src={article.sharedImg} alt="" />
+                      )
+                    )}
+                  </a>
+                </SharedImage>
+              )}
               <SocialCount>
                 {props.articles[key].likes.count > 0 && (
                   <>
@@ -397,10 +406,6 @@ function Main(props) {
                 <button>
                   <img src="/images/share-icon.svg" alt="" />
                   <span>Share</span>
-                </button>
-                <button>
-                  <img src="/images/send-icon.svg" alt="" />
-                  <span>Send</span>
                 </button>
               </SocialActions>
             </Article>

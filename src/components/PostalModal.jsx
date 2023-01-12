@@ -120,8 +120,8 @@ const AssetButton = styled.button`
 const PostButton = styled.button`
   cursor: pointer;
   min-width: 60px;
-  padding: 0 16px;
-  border-radius: 20px;
+  padding: 0 25px;
+  border-radius: 15px;
   background: ${(props) => (props.disabled ? "#b8b8b8" : "#0a66c2")};
   color: ${(props) => (props.disabled ? "#5a5a5a" : "#fff")};
   font-size: 16px;
