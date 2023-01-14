@@ -1,11 +1,11 @@
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
-import Firebase from "firebase";
 import styled from "styled-components";
 import { postArticleAPI } from "../action";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { Timestamp } from "firebase/firestore";
 
 const Container = styled.div`
   position: fixed;
@@ -221,7 +221,7 @@ function PostalModal(props) {
       video: videoFile,
       description: editorText,
       user: props.user,
-      timestamp: Firebase.firestore.Timestamp.now(),
+      timestamp: Timestamp.now(),
     };
 
     props.postArticle(payload);
