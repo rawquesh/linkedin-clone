@@ -7,6 +7,8 @@ import {
   updateDoc,
   getDocs,
 } from "firebase/firestore";
+import { signInWithPopup } from "firebase/auth";
+import { getDownloadURL, ref, uploadBytes, uploadBytesResumable } from "firebase/storage";
 
 export function setUser(payload) {
   return {
@@ -42,8 +44,7 @@ export function getUserAuth() {
 
 export function signInAPI() {
   return (dispatch) => {
-    auth
-      .signInWithPopup(provider)
+    signInWithPopup(auth, provider)
       .then((payload) => dispatch(setUser(payload.user)))
       .catch((err) => alert(err.message));
   };
@@ -62,10 +63,20 @@ export function postArticleAPI(payload) {
   return (dispatch) => {
     if (payload.image !== "") {
       dispatch(setLoading(true));
-      const upload = storage
-        .ref(`images/${payload.image.name}`)
-        .put(payload.image);
-      upload.on(
+
+      const storageRef = ref(storage, `images/${payload.image.name}`);
+
+      const metadata = {
+        contentType: payload.image.type,
+      };
+
+      const uploadTask = uploadBytesResumable(
+        storageRef,
+        payload.image,
+        metadata
+      );
+
+      uploadTask.on(
         "state_changed",
         (snapshot) => {
           const progress =
@@ -73,7 +84,7 @@ export function postArticleAPI(payload) {
         },
         (err) => alert(err),
         async () => {
-          const downloadURL = await upload.snapshot.ref.getDownloadURL();
+          const downloadURL = await getDownloadURL(storageRef);
           addDoc(collection(db, "articles"), {
             actor: {
               description: payload.user.email,
