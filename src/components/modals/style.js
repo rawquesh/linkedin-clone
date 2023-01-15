@@ -115,7 +115,7 @@ export const PostButton = styled.button`
   min-width: 60px;
   padding: 0 25px;
   border-radius: 15px;
-  min-height: 40px;
+  min-height: 36.5px;
   background: ${(props) => (props.disabled ? "#b8b8b8" : "#0a66c2")};
   color: ${(props) => (props.disabled ? "#5a5a5a" : "#fff")};
   font-size: 16px;

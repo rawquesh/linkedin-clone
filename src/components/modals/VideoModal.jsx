@@ -1,5 +1,5 @@
 import { Container, Content, Header, PostButton, UserInfo } from "./style";
-import { Box, Button, IconButton, Typography } from "@mui/material";
+import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
 import { connect } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
@@ -22,65 +22,63 @@ function VideoModal({ clickHandler, showModal, user }) {
                 <img src="/images/close-icon.svg" alt="" />
               </button>
             </Header>
-            <UserInfo>
-              {user?.photoURL ? (
-                <img src={user?.photoURL} alt="" />
-              ) : (
-                <img src="/images/user.svg" alt="" />
-              )}
-              <span>{user.displayName ? user.displayName : "Name"}</span>
-            </UserInfo>
-            <Box sx={{ padding: "12px 24px" }}>
-              <Box display="flex" flexDirection="column" gap={2}>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                >
-                  <Typography variant="body1">Select a video</Typography>
-                  <IconButton onClick={() => setVideo(null)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-                <Button
-                  component="label"
-                  sx={{
-                    height: "250px",
-                    width: "100%",
-                    backgroundColor: "#C1C1C1",
-                    padding: 0,
-                  }}
-                >
-                  {video && (
-                    <video
-                      controls
-                      style={{
-                        maxHeight: "250px",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                      src={video}
-                    />
-                  )}
-                  <input
-                    accept="video/*"
-                    type="file"
-                    onChange={(e) => {
-                      setVideo(URL.createObjectURL(e.target.files[0]));
-                      e.target.value = null;
+            <Box
+              justifyContent="center"
+              width="100%"
+              boxSizing="border-box"
+              display="flex"
+              sx={{
+                padding: video ? "initial" : "75px 24px",
+                backgroundColor: video ? "black" : "initial",
+              }}
+            >
+              <Box>
+                {video ? (
+                  <video
+                    controls
+                    style={{
+                      maxHeight: "75vh",
+                      height: "100%",
+                      width: "100%",
                     }}
-                    hidden
+                    src={video}
                   />
-                </Button>
+                ) : (
+                  <Button
+                    component="label"
+                    sx={{ textTransform: "none", width: "max-content" }}
+                  >
+                    Select/Edit your video
+                    <input
+                      accept="video/*"
+                      type="file"
+                      onChange={(e) => {
+                        setVideo(URL.createObjectURL(e.target.files[0]));
+                        e.target.value = null;
+                      }}
+                      hidden
+                    />
+                  </Button>
+                )}
               </Box>
             </Box>
+            <Divider />
+
             <Box
               display="flex"
               justifyContent="flex-end"
               alignItems="center"
               height="100%"
               sx={{ padding: "10px 24px" }}
+              gap={2}
             >
+              <Button
+                onClick={(e) => reset(e)}
+                sx={{ borderRadius: "15px" }}
+                variant="outlined"
+              >
+                Cancel
+              </Button>
               <PostButton disabled={!video}>Post</PostButton>
             </Box>
           </Content>
