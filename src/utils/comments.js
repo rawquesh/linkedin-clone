@@ -1,5 +1,5 @@
 import React from "react";
-import { Stack } from "@mui/material";
+import { Divider, Stack } from "@mui/material";
 import Comment from "../components/Comment";
 
 export const renderComment = (
@@ -9,7 +9,8 @@ export const renderComment = (
   divider = true,
   parentcomment,
   onPressPin,
-  onPressUnPin
+  onPressUnPin,
+  lastComment = false
 ) => {
   const hasSubcomments = comment?.data?.subcomments?.length > 0;
 
@@ -52,34 +53,33 @@ export const renderComment = (
   );
 
   return (
-    <Stack flexDirection="column" width="100%" gap={3}>
-      <Comment
-        {...comment.data}
-        id={comment.id}
-        viewThread={viewThread}
-        onPressPin={() => {
-          addToPinned();
-        }}
-        onPressUnPin={() => {
-          addToUnPinned();
-        }}
-        settings={comment.settings}
-        showPin={false}
-      />
-      {subcomments.map((subcomment) => (
-        <Stack
-          boxSizing="border-box"
-          // width="100%"
-          // flexDirection="row"
-          justifyContent="flex-end"
-        >
-          {renderComment(
-            (comment = subcomment),
-            true,
-            (parentcomment = comment)
-          )}
-        </Stack>
-      ))}
-    </Stack>
+    <>
+      <Stack flexDirection="column" width="100%">
+        <Comment
+          {...comment.data}
+          id={comment.id}
+          viewThread={viewThread}
+          onPressPin={() => {
+            addToPinned();
+          }}
+          onPressUnPin={() => {
+            addToUnPinned();
+          }}
+          settings={comment.settings}
+          showPin={false}
+        />
+        {subcomments.map((subcomment, index) => (
+          <Stack boxSizing="border-box" justifyContent="flex-end">
+            {renderComment(
+              (comment = subcomment),
+              true,
+              (parentcomment = comment),
+              (lastComment = index === subcomment.length - 1)
+            )}
+          </Stack>
+        ))}
+      </Stack>
+      {!lastComment && <Divider />}
+    </>
   );
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Box, Button, Stack, useTheme } from "@mui/material";
 import renderIcon from "../../utils/render-icon";
@@ -35,7 +35,9 @@ const Container = styled(Box)`
   }
 `;
 
-export function ReplyBox({ onClick, Text, setText, onClickCancel }) {
+export function ReplyBox({ onClick, onClickCancel }) {
+  const [text, setText] = useState("");
+
   const theme = useTheme();
   return (
     <Container>
@@ -43,7 +45,7 @@ export function ReplyBox({ onClick, Text, setText, onClickCancel }) {
         placeholder="Start typing..."
         rows={1}
         style={{ fontSize: "medium" }}
-        value={Text}
+        value={text}
         onChange={(event) => setText(event.target.value)}
       />
       <Stack
@@ -77,7 +79,7 @@ export function ReplyBox({ onClick, Text, setText, onClickCancel }) {
         <Button
           onClick={() => {
             if (onClick) {
-              onClick();
+              onClick(text);
             }
           }}
           sx={{

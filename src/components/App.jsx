@@ -1,10 +1,11 @@
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Login from "./Login";
 import Header from "./Header";
 import Home from "./Home";
 import { useEffect } from "react";
 import { getUserAuth } from "../action";
 import { connect } from "react-redux";
+import Post from "./main-sections/Post";
 
 function App(props) {
   useEffect(() => {
@@ -21,6 +22,10 @@ function App(props) {
           <Route path="/feed">
             <Header />
             <Home />
+          </Route>
+          <Route path="/post/:id">
+            <Header />
+            <Post />
           </Route>
         </Switch>
       </Router>

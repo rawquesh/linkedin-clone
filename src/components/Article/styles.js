@@ -121,9 +121,8 @@ export const SocialActions = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin: 4px 12px;
+  padding: 4px 12px;
   min-height: 40px;
-  padding-bottom: 5px;
   gap: 5px;
 
   button {

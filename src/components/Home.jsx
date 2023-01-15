@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { Redirect } from "react-router";
 import styled from "styled-components";
 import Left from "./Left";
-import Main from "./Main";
 import Right from "./Right";
+import Main from "./main-sections/Main";
 
 const Container = styled.div`
   max-width: 100%;
@@ -29,10 +29,10 @@ const Layout = styled.div`
   }
 `;
 
-function Home(props) {
+function Home({ post, user }) {
   return (
     <Container>
-      {!props.user && <Redirect to="/" />}
+      {!user && <Redirect to="/" />}
       <Content>
         <Layout>
           <Left />

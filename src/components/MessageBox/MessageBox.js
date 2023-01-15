@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Button, useTheme } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { Container, StyledTextArea } from "./style";
 import renderIcon from "../../utils/render-icon";
 
 export function MessageBox({ onClick }) {
-  const theme = useTheme();
-
   const [text, setText] = useState("");
 
   return (
@@ -14,27 +12,22 @@ export function MessageBox({ onClick }) {
         placeholder="Start typing..."
         style={{ fontSize: "medium" }}
         value={text}
-        onChange={(event) => setText(event.target.value)}
+        onChange={(event) => {
+          setText(event.target.value);
+          event.target.style.height = "auto";
+          event.target.style.height = event.target.scrollHeight - 10 + "px";
+        }}
       />
-      <Button
+      <IconButton
         onClick={() => {
           if (onClick) {
             onClick(text);
+            setText("");
           }
         }}
-        sx={{
-          backgroundColor: theme.palette.secondary.main,
-          color: "white",
-          paddingX: 3,
-          paddingY: 1,
-          display: "flex",
-          gap: 2,
-        }}
-        variant="contained"
       >
-        Send
-        {renderIcon("send", "white")}
-      </Button>
+        {renderIcon("send", "black")}
+      </IconButton>
     </Container>
   );
 }

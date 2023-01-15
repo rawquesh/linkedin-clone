@@ -1,197 +1,63 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
-import styled from "styled-components";
-import { postArticleAPI } from "../action";
-import { IconButton } from "@mui/material";
+import { postArticleAPI } from "../../action";
+import { Box, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Firebase from "firebase";
+import {
+  Container,
+  Header,
+  Content,
+  SharedContent,
+  UploadImage,
+  AttachAsset,
+  Editor,
+  AssetButton,
+  PostButton,
+  ShareCreation,
+  UserInfo,
+} from "./style";
+import articleMock from "../../mocks/article";
+import Article from "../Article/Article";
+import validURL from "../../utils/validUrl";
+import { getArticleById } from "../../firebase/queries";
 
-const Container = styled.div`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 11;
-  background-color: rgba(0, 0, 0, 0.8);
-  animation: fadeIn 0.3s ease;
-`;
-
-const Content = styled.div`
-  width: 100%;
-  max-width: 552px;
-  max-height: 90%;
-  background-color: #fff;
-  overflow: initial;
-  border-radius: 5px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  top: 32px;
-  margin: 0 auto;
-`;
-
-const Header = styled.div`
-  padding: 10px 20px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  font-size: 20px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.9);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  h2 {
-    font-weight: 400;
-  }
-  button {
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    min-width: auto;
-    border: none;
-    outline: none;
-    background: transparent;
-    img,
-    svg {
-      pointer-events: none;
-    }
-  }
-`;
-
-const SharedContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  overflow-y: auto;
-  vertical-align: baseline;
-  background: transparent;
-  padding: 5px 12px;
-`;
-
-const UserInfo = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 10px 24px;
-  img {
-    width: 48px;
-    height: 48px;
-    background-clip: content-box;
-    border-radius: 50%;
-    border: 2px solid transparent;
-  }
-  span {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 1.5;
-    margin-left: 5px;
-  }
-`;
-
-const ShareCreation = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 24px 10px 16px;
-`;
-
-const AttachAsset = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const AssetButton = styled.button`
-  display: flex;
-  align-items: center;
-  height: 40px;
-  width: 40px;
-  cursor: pointer;
-  min-width: auto;
-  margin-right: 8px;
-  border-radius: 50%;
-  border: none;
-  outline: none;
-  justify-content: center;
-  background: transparent;
-  &:hover {
-    background: rgba(0, 0, 0, 0.08);
-  }
-`;
-
-const PostButton = styled.button`
-  cursor: pointer;
-  min-width: 60px;
-  padding: 0 25px;
-  border-radius: 15px;
-  background: ${(props) => (props.disabled ? "#b8b8b8" : "#0a66c2")};
-  color: ${(props) => (props.disabled ? "#5a5a5a" : "#fff")};
-  font-size: 16px;
-  letter-spacing: 1.1px;
-  border: none;
-  outline: none;
-  &:hover {
-    background: ${(props) => (props.disabled ? "#b8b8b8" : "#004182")};
-  }
-`;
-
-const Editor = styled.div`
-  padding: 12px 24px;
-  textarea {
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
-    width: 100%;
-    min-height: 100px;
-    resize: none;
-    padding: 10px;
-  }
-  input {
-    width: 100%;
-    height: 35px;
-    font-size: 16px;
-    margin-bottom: 20px;
-  }
-`;
-
-const UploadImage = styled.div`
-  text-align: center;
-
-  img {
-    margin-top: 10px;
-    width: 100%;
-    border: 1px solid rgba(169, 169, 169, 0.5);
-    border-radius: 8px;
-  }
-
-  p {
-    border-radius: 8px;
-    margin-top: 10px;
-    padding: 0 10px;
-    border: 1px dashed darkgrey;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    label {
-      padding: 10px 0;
-      display: block;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-  }
-`;
-
-function PostalModal(props) {
+function PostalModal({ clickHandler, showModal, user }) {
   const [editorText, setEditorText] = useState("");
   const [imageFile, setImageFile] = useState("");
   const [videoFile, setVideoFile] = useState("");
   const [assetArea, setAssetArea] = useState("");
+  const [postLink, setPostLink] = useState("");
+  const [article, setArticle] = useState(null);
+
+  useEffect(() => {
+    if (!postLink) {
+      setArticle(null);
+    }
+
+    if (validURL(postLink)) {
+      const url = new URL(postLink);
+
+      getArticleById("id").then((querySnapshot) => {
+        const data = querySnapshot.docs[0]?.data();
+
+        if (data) {
+          setArticle(article);
+        }
+
+        setArticle(articleMock);
+      });
+    }
+  }, [postLink]);
 
   const reset = (event) => {
     setEditorText("");
     setImageFile("");
     setVideoFile("");
     setAssetArea("");
-    props.clickHandler(event);
+    setPostLink("");
+    clickHandler(event);
   };
 
   function handleImage(event) {
@@ -220,17 +86,17 @@ function PostalModal(props) {
       image: imageFile,
       video: videoFile,
       description: editorText,
-      user: props.user,
+      user: user,
       timestamp: Firebase.firestore.Timestamp.now(),
     };
 
-    props.postArticle(payload);
+    postArticle(payload);
     reset(event);
   }
 
   return (
     <>
-      {props.showModal === "open" && (
+      {showModal === "open" && (
         <Container>
           <Content>
             <Header>
@@ -241,22 +107,36 @@ function PostalModal(props) {
             </Header>
             <SharedContent>
               <UserInfo>
-                {props.user?.photoURL ? (
-                  <img src={props.user?.photoURL} alt="" />
+                {user?.photoURL ? (
+                  <img src={user?.photoURL} alt="" />
                 ) : (
                   <img src="/images/user.svg" alt="" />
                 )}
-                <span>
-                  {props.user.displayName ? props.user.displayName : "Name"}
-                </span>
+                <span>{user.displayName ? user.displayName : "Name"}</span>
               </UserInfo>
               <Editor>
-                <textarea
-                  value={editorText}
-                  onChange={(event) => setEditorText(event.target.value)}
-                  placeholder="What do you want to talk about?"
-                  autoFocus={true}
+                <input
+                  type="url"
+                  placeholder="Enter a post url to share"
+                  pattern="https://.*"
+                  width="100%"
+                  value={postLink}
+                  onChange={(event) => setPostLink(event.target.value)}
                 />
+
+                <Box position="relative" width="100%">
+                  <textarea
+                    value={editorText}
+                    onChange={(event) => setEditorText(event.target.value)}
+                    placeholder="What do you want to talk about?"
+                    autoFocus={true}
+                  />
+                  {article && (
+                    <Box>
+                      <Article preview article={article} />
+                    </Box>
+                  )}
+                </Box>
 
                 {assetArea === "image" ? (
                   <UploadImage>
@@ -284,6 +164,8 @@ function PostalModal(props) {
                   assetArea === "video" && (
                     <>
                       <input
+                        style={{ boxSizing: "border-box" }}
+                        width="100%"
                         type="text"
                         name="video"
                         id="videoFile"
