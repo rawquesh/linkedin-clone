@@ -50,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "prettier": "^2.8.2"
+    "prettier": "^2.8.2",
+    "react-toastify": "^9.1.1"
   }
 }
