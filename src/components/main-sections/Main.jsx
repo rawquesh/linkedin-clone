@@ -107,12 +107,20 @@ function Main(props) {
             />
           ))}
       </Content>
-      <PostalModal showModal={showModal} clickHandler={clickHandler} />
+      <PostalModal
+        setShowImageModal={setShowImageModal}
+        setShowVideoModal={setShowVideoModal}
+        setShowModal={setShowModal}
+        showModal={showModal}
+        clickHandler={clickHandler}
+      />
       <ImageModal
+        setShowPostModal={setShowModal}
         showModal={showImageModal}
         clickHandler={() => setShowImageModal(false)}
       />
       <VideoModal
+        setShowPostModal={setShowModal}
         showModal={showVideoModal}
         clickHandler={() => setShowVideoModal(false)}
       />

@@ -15,6 +15,7 @@ import db, { auth } from "../../firebase/index";
 import MessageBox from "../MessageBox";
 import comments from "../../mocks/comments";
 import { connect } from "react-redux";
+import toast from "react-hot-toast";
 
 function Article({ article, onLikeClick, user, id, preview = false }) {
   const [commentsFromDB, setCommentsFromDB] = useState([]);
@@ -47,6 +48,17 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
       parentCommentId: "",
       parentUserId: auth.currentUser.uid,
     });
+  };
+
+  const onShareClick = () => {
+    navigator.clipboard.writeText(`https://www.provider.com/post/${id}`).then(
+      () => {
+        toast.success("Link copied to clipboard.", { position: "bottom-left" });
+      },
+      () => {
+        toast.error("Failed to copy", { position: "bottom-left" });
+      }
+    );
   };
 
   return (
@@ -120,7 +132,7 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
                 </svg>
                 <span>Like</span>
               </button>
-              <button>
+              <button onClick={onShareClick}>
                 <img src="/images/share-icon.svg" alt="" />
                 <span>Share</span>
               </button>

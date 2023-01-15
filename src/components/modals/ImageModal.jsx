@@ -4,15 +4,18 @@ import { connect } from "react-redux";
 import { useRef, useState } from "react";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { usePostContext } from "../../context/postContext";
 
-function ImageModal({ clickHandler, showModal, user }) {
+function ImageModal({ clickHandler, showModal, setShowPostModal }) {
   const [images, setImages] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
-  const imageContainer = useRef(null);
+
+  const { setImageFile, resetPostContext, isCreatingPost } = usePostContext();
 
   const reset = (e) => {
     clickHandler(e);
     setCurrentImage(0);
+    resetPostContext();
     setImages(null);
   };
 
@@ -105,7 +108,7 @@ function ImageModal({ clickHandler, showModal, user }) {
                     Select images to share
                     <input
                       accept="image/*"
-                      multiple
+                      multiple={!isCreatingPost}
                       type="file"
                       onChange={(e) => {
                         setImages((prev) =>
@@ -140,13 +143,35 @@ function ImageModal({ clickHandler, showModal, user }) {
               gap={2}
             >
               <Button
-                onClick={(e) => reset(e)}
+                onClick={(e) => {
+                  if (isCreatingPost) {
+                    setShowPostModal("open");
+                    setImages(null);
+                    clickHandler(e);
+                  } else {
+                    reset(e);
+                  }
+                }}
                 sx={{ borderRadius: "15px" }}
                 variant="outlined"
               >
-                Cancel
+                {isCreatingPost ? "Back" : "Cancel"}
               </Button>
-              <PostButton disabled={!images}>Post</PostButton>
+              <PostButton
+                onClick={(e) => {
+                  if (isCreatingPost) {
+                    setImageFile(images[0]);
+                    setImages(null);
+                    setShowPostModal("open");
+                    clickHandler(e);
+                  } else {
+                    // add to db
+                  }
+                }}
+                disabled={!images}
+              >
+                {isCreatingPost ? "Done" : "Post"}
+              </PostButton>
             </Box>
           </Content>
         </Container>

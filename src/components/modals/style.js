@@ -65,7 +65,7 @@ export const SharedContent = styled.div`
 export const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px 24px;
+  padding: 10px;
   img {
     width: 48px;
     height: 48px;
@@ -132,11 +132,8 @@ export const Editor = styled.div`
   flex-direction: column;
 
   textarea {
-    border-radius: 5px;
     font-family: Arial, sans-serif;
-    min-height: 100px;
     resize: none;
-    padding: 10px;
     margin-bottom: 10px;
     width: 100%;
     box-sizing: border-box;

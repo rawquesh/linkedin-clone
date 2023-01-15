@@ -1,14 +1,18 @@
-import { Container, Content, Header, PostButton, UserInfo } from "./style";
-import { Box, Button, Divider, IconButton, Typography } from "@mui/material";
+import { Container, Content, Header, PostButton } from "./style";
+import { Box, Button, Divider } from "@mui/material";
 import { connect } from "react-redux";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { useState } from "react";
+import { usePostContext } from "../../context/postContext";
 
-function VideoModal({ clickHandler, showModal, user }) {
+function VideoModal({ clickHandler, showModal, setShowPostModal }) {
   const [video, setVideo] = useState(null);
+
+  const { setVideoFile, resetPostContext, isCreatingPost } = usePostContext();
+
   const reset = () => {
     clickHandler();
     setVideo(null);
+    resetPostContext();
   };
 
   return (
@@ -73,13 +77,35 @@ function VideoModal({ clickHandler, showModal, user }) {
               gap={2}
             >
               <Button
-                onClick={(e) => reset(e)}
+                onClick={(e) => {
+                  if (isCreatingPost) {
+                    setShowPostModal("open");
+                    setVideo(null);
+                    clickHandler(e);
+                  } else {
+                    reset(e);
+                  }
+                }}
                 sx={{ borderRadius: "15px" }}
                 variant="outlined"
               >
-                Cancel
+                {isCreatingPost ? "Back" : "Cancel"}
               </Button>
-              <PostButton disabled={!video}>Post</PostButton>
+              <PostButton
+                onClick={(e) => {
+                  if (isCreatingPost) {
+                    setVideoFile(video);
+                    setVideo(null);
+                    setShowPostModal("open");
+                    clickHandler(e);
+                  } else {
+                    // add to db
+                  }
+                }}
+                disabled={!video}
+              >
+                {isCreatingPost ? "Done" : "Post"}
+              </PostButton>
             </Box>
           </Content>
         </Container>

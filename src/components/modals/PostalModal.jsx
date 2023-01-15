@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { postArticleAPI } from "../../action";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Firebase from "firebase";
 import {
@@ -18,63 +18,59 @@ import {
   ShareCreation,
   UserInfo,
 } from "./style";
-import articleMock from "../../mocks/article";
+import toast from "react-hot-toast";
 import Article from "../Article/Article";
 import validURL from "../../utils/validUrl";
 import { getArticleById } from "../../firebase/queries";
+import { usePostContext } from "../../context/postContext";
 
-function PostalModal({ clickHandler, showModal, user }) {
+function PostalModal({
+  clickHandler,
+  showModal,
+  user,
+  setShowImageModal,
+  setShowVideoModal,
+  setShowModal,
+}) {
   const [editorText, setEditorText] = useState("");
-  const [imageFile, setImageFile] = useState("");
-  const [videoFile, setVideoFile] = useState("");
-  const [assetArea, setAssetArea] = useState("");
-  const [postLink, setPostLink] = useState("");
   const [article, setArticle] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!postLink) {
-      setArticle(null);
-    }
+  const { imageFile, videoFile, resetPostContext, setIsCreatingPost } =
+    usePostContext();
+
+  const onTextAreaPaste = (e) => {
+    const postLink = e.clipboardData.getData("text");
 
     if (validURL(postLink)) {
+      setLoading(true);
       const url = new URL(postLink);
+      let id = url.pathname.split("/")[2];
 
-      getArticleById("id").then((querySnapshot) => {
-        const data = querySnapshot.docs[0]?.data();
+      id = !!id ? id : "unknown";
 
-        if (data) {
-          setArticle(article);
+      getArticleById(id).then((doc) => {
+        if (doc.exists) {
+          setArticle(doc.data());
+        } else {
+          toast.error(
+            "Cannot display preview. You can post as is, or try another link.",
+            { position: "bottom-left" }
+          );
         }
 
-        setArticle(articleMock);
+        setLoading(false);
       });
     }
-  }, [postLink]);
+  };
 
   const reset = (event) => {
     setEditorText("");
-    setImageFile("");
-    setVideoFile("");
-    setAssetArea("");
-    setPostLink("");
+    setArticle(null);
+    setLoading(false);
+    resetPostContext();
     clickHandler(event);
   };
-
-  function handleImage(event) {
-    let image = event.target.files[0];
-
-    if (image === "" || image === undefined) {
-      alert(`Not an image. This file is: ${typeof imageFile}`);
-      return;
-    }
-    setImageFile(image);
-  }
-
-  function switchAssetArea(area) {
-    setImageFile("");
-    setVideoFile("");
-    setAssetArea(area);
-  }
 
   function postArticle(event) {
     event.preventDefault();
@@ -115,78 +111,80 @@ function PostalModal({ clickHandler, showModal, user }) {
                 <span>{user.displayName ? user.displayName : "Name"}</span>
               </UserInfo>
               <Editor>
-                <input
-                  type="url"
-                  placeholder="Enter a post url to share"
-                  pattern="https://.*"
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  gap={2}
+                  position="relative"
                   width="100%"
-                  value={postLink}
-                  onChange={(event) => setPostLink(event.target.value)}
-                />
-
-                <Box position="relative" width="100%">
+                >
                   <textarea
+                    onPaste={(e) => onTextAreaPaste(e)}
+                    style={{ border: "none", outline: "none" }}
                     value={editorText}
-                    onChange={(event) => setEditorText(event.target.value)}
+                    onChange={(event) => {
+                      setEditorText(event.target.value);
+                      event.target.style.height = "auto";
+                      event.target.style.height =
+                        event.target.scrollHeight + "px";
+                    }}
                     placeholder="What do you want to talk about?"
                     autoFocus={true}
                   />
-                  {article && (
+                  {loading && (
+                    <Box height="50px" display="flex" justifyContent="center">
+                      <CircularProgress />
+                    </Box>
+                  )}
+                  {article && !loading && (
                     <Box>
                       <Article preview article={article} />
                     </Box>
                   )}
-                </Box>
-
-                {assetArea === "image" ? (
-                  <UploadImage>
-                    <input
-                      type="file"
-                      accept="image/gif, image/jpeg, image/png"
-                      name="image"
-                      id="imageFile"
-                      onChange={handleImage}
-                      style={{ display: "none" }}
+                  {imageFile && (
+                    <img
+                      style={{
+                        objectFit: "cover",
+                        height: "100%",
+                        width: "100%",
+                      }}
+                      src={imageFile}
+                      alt="list"
                     />
-                    <p>
-                      <label htmlFor="imageFile">
-                        Select an image to share
-                      </label>
-                      <IconButton onClick={() => setImageFile("")}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </p>
-                    {imageFile && (
-                      <img src={URL.createObjectURL(imageFile)} alt="" />
-                    )}
-                  </UploadImage>
-                ) : (
-                  assetArea === "video" && (
-                    <>
-                      <input
-                        style={{ boxSizing: "border-box" }}
-                        width="100%"
-                        type="text"
-                        name="video"
-                        id="videoFile"
-                        value={videoFile}
-                        placeholder="Enter the video link"
-                        onChange={(event) => setVideoFile(event.target.value)}
-                      />
-                      {videoFile && (
-                        <ReactPlayer width={"100%"} url={videoFile} />
-                      )}
-                    </>
-                  )
-                )}
+                  )}
+                  {videoFile && (
+                    <video
+                      controls
+                      style={{
+                        backgroundColor: "black",
+                        maxHeight: "75vh",
+                        height: "100%",
+                        width: "100%",
+                      }}
+                      src={videoFile}
+                    />
+                  )}
+                </Box>
               </Editor>
             </SharedContent>
             <ShareCreation>
               <AttachAsset>
-                <AssetButton onClick={() => switchAssetArea("image")}>
+                <AssetButton
+                  onClick={(e) => {
+                    setShowModal("close");
+                    setShowImageModal(true);
+                    setIsCreatingPost(true);
+                  }}
+                >
                   <img src="/images/share-image.svg" alt="" />
                 </AssetButton>
-                <AssetButton onClick={() => switchAssetArea("video")}>
+                <AssetButton
+                  onClick={(e) => {
+                    setShowModal("close");
+                    setShowVideoModal(true);
+                    setIsCreatingPost(true);
+                  }}
+                >
                   <img src="/images/share-video.svg" alt="" />
                 </AssetButton>
               </AttachAsset>
