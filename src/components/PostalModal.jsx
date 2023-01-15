@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { postArticleAPI } from "../action";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Timestamp } from "firebase/firestore";
+import Firebase from "firebase";
 
 const Container = styled.div`
   position: fixed;
@@ -221,7 +221,7 @@ function PostalModal(props) {
       video: videoFile,
       description: editorText,
       user: props.user,
-      timestamp: Timestamp.now(),
+      timestamp: Firebase.firestore.Timestamp.now(),
     };
 
     props.postArticle(payload);

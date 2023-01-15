@@ -9,7 +9,6 @@ import {
   ArticleContainer,
 } from "./styles";
 import { Box, Stack } from "@mui/material";
-import { Timestamp } from "firebase/firestore";
 import { renderComment } from "../../utils/comments";
 export function Article({ article, articles, index, onLikeClick, ids, user }) {
   const [commentsFromDB, setCommentsFromDB] = useState([]);
@@ -93,17 +92,17 @@ export function Article({ article, articles, index, onLikeClick, ids, user }) {
           </button>
         </SocialActions>
       </ArticleContainer>
-      {commentsFromDB.filter(
-        (cfdb) => (Timestamp.now() - cfdb.data.dateCreated.seconds) / 60 > 30
-      ).length > 0 && (
-        <Stack gap={3}>
-          {commentsFromDB
-            .filter((cfdb) => !cfdb.data.pinned)
-            .map((comment) => {
-              return renderComment(comment, false, false, true, null);
-            })}
-        </Stack>
-      )}
+      {/*{commentsFromDB.filter(*/}
+      {/*  (cfdb) => (Timestamp.now() - cfdb.data.dateCreated.seconds) / 60 > 30*/}
+      {/*).length > 0 && (*/}
+      {/*  <Stack gap={3}>*/}
+      {/*    {commentsFromDB*/}
+      {/*      .filter((cfdb) => !cfdb.data.pinned)*/}
+      {/*      .map((comment) => {*/}
+      {/*        return renderComment(comment, false, false, true, null);*/}
+      {/*      })}*/}
+      {/*  </Stack>*/}
+      {/*)}*/}
     </Box>
   );
 }
