@@ -28,6 +28,7 @@ function PostalModal({
   setShowImageModal,
   setShowVideoModal,
   setShowModal,
+  postArticleToFirebase,
 }) {
   const [editorText, setEditorText] = useState("");
   const [article, setArticle] = useState(null);
@@ -71,7 +72,6 @@ function PostalModal({
   };
 
   function postArticle(event) {
-    event.preventDefault();
     if (event.target !== event.currentTarget) {
       return;
     }
@@ -84,7 +84,7 @@ function PostalModal({
       timestamp: Firebase.firestore.Timestamp.now(),
     };
 
-    postArticle(payload);
+    postArticleToFirebase(payload);
     reset(event);
   }
 
@@ -190,7 +190,7 @@ function PostalModal({
                 color={theme ? "secondary" : "primary"}
                 variant="contained"
                 disabled={!editorText ? true : false}
-                onClick={(event) => postArticle(event)}
+                onClick={(e) => postArticle(e)}
               >
                 Post
               </Button>
@@ -210,7 +210,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    postArticle: (payload) => dispatch(postArticleAPI(payload)),
+    postArticleToFirebase: (payload) => dispatch(postArticleAPI(payload)),
   };
 };
 

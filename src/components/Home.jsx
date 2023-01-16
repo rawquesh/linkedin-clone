@@ -39,6 +39,7 @@ function Home({ user }) {
     <Container
       style={{
         backgroundPosition: "center",
+        backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
         backgroundImage: `url("/images/wellness-${
