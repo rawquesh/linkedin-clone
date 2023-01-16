@@ -6,6 +6,7 @@ import Article from "../Article/Article";
 import ImageModal from "../modals/ImageModal";
 import VideoModal from "../modals/VideoModal";
 import { Container, Content, ShareBox } from "./style";
+import { CircularProgress } from "@mui/material";
 
 function Main(props) {
   const [showModal, setShowModal] = useState("close");
@@ -96,7 +97,7 @@ function Main(props) {
         </div>
       </ShareBox>
       <Content>
-        {props.loading && <img src="/images/spin-loader.gif" alt="" />}
+        {props.loading && <CircularProgress />}
         {props.articles.length > 0 &&
           props.articles.map((article, index) => (
             <Article

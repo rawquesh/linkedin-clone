@@ -1,14 +1,17 @@
-import { Container, Content, Header, PostButton } from "./style";
+import { Container, Content, Header } from "./style";
 import { Box, Button, Divider } from "@mui/material";
 import { connect } from "react-redux";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { usePostContext } from "../../context/postContext";
+import { useThemeContext } from "../../context/themeContext";
 
 function ImageModal({ clickHandler, showModal, setShowPostModal }) {
   const [images, setImages] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
+
+  const { theme } = useThemeContext();
 
   const { setImageFile, resetPostContext, isCreatingPost } = usePostContext();
 
@@ -102,6 +105,7 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                   </Box>
                 ) : (
                   <Button
+                    color={theme ? "secondary" : "primary"}
                     sx={{ textTransform: "none", width: "max-content" }}
                     component="label"
                   >
@@ -143,6 +147,7 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
               gap={2}
             >
               <Button
+                color={theme ? "secondary" : "primary"}
                 onClick={(e) => {
                   if (isCreatingPost) {
                     setShowPostModal("open");
@@ -152,12 +157,13 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                     reset(e);
                   }
                 }}
-                sx={{ borderRadius: "15px" }}
                 variant="outlined"
               >
                 {isCreatingPost ? "Back" : "Cancel"}
               </Button>
-              <PostButton
+              <Button
+                color={theme ? "secondary" : "primary"}
+                variant="contained"
                 onClick={(e) => {
                   if (isCreatingPost) {
                     setImageFile(images[0]);
@@ -171,7 +177,7 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                 disabled={!images}
               >
                 {isCreatingPost ? "Done" : "Post"}
-              </PostButton>
+              </Button>
             </Box>
           </Content>
         </Container>

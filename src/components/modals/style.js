@@ -110,23 +110,6 @@ export const AssetButton = styled.button`
   }
 `;
 
-export const PostButton = styled.button`
-  cursor: pointer;
-  min-width: 60px;
-  padding: 0 25px;
-  border-radius: 15px;
-  min-height: 36.5px;
-  background: ${(props) => (props.disabled ? "#b8b8b8" : "#0a66c2")};
-  color: ${(props) => (props.disabled ? "#5a5a5a" : "#fff")};
-  font-size: 16px;
-  letter-spacing: 1.1px;
-  border: none;
-  outline: none;
-  &:hover {
-    background: ${(props) => (props.disabled ? "#b8b8b8" : "#004182")};
-  }
-`;
-
 export const Editor = styled.div`
   display: flex;
   flex-direction: column;

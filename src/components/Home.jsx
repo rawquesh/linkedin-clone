@@ -5,9 +5,12 @@ import styled from "styled-components";
 import Left from "./Left";
 import Right from "./Right";
 import Main from "./main-sections/Main";
+import { useThemeContext } from "../context/themeContext";
 
 const Container = styled.div`
   max-width: 100%;
+
+  transition: all ease-in-out 0.15s;
 `;
 
 const Content = styled.div`
@@ -21,7 +24,7 @@ const Layout = styled.div`
   grid-template-columns: minmax(0, 5fr) minmax(0, 12fr) minmax(300px, 7fr);
   column-gap: 25px;
   row-gap: 25px;
-  margin: 25px 0;
+  padding: 25px 0;
   @media (max-width: 768px) {
     display: flex;
     flex-direction: column;
@@ -29,9 +32,20 @@ const Layout = styled.div`
   }
 `;
 
-function Home({ post, user }) {
+function Home({ user }) {
+  const { theme } = useThemeContext();
+
   return (
-    <Container>
+    <Container
+      style={{
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        backgroundImage: `url("/images/wellness-${
+          theme ? "forest" : "ocean"
+        }.jpg")`,
+      }}
+    >
       {!user && <Redirect to="/" />}
       <Content>
         <Layout>

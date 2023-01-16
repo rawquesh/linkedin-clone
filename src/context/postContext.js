@@ -10,6 +10,7 @@ export function PostContextProvider({ children }) {
   const resetPostContext = () => {
     setImageFile("");
     setVideoFile("");
+    setIsCreatingPost(false);
   };
 
   return (

@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { signOutAPI } from "../action";
 import { Link } from "react-router-dom";
+import { Button } from "@mui/material";
+import { useThemeContext } from "../context/themeContext";
 
 const Container = styled.div`
   background-color: #fff;
@@ -190,6 +192,8 @@ const User = styled(NavList)`
 `;
 
 function Header(props) {
+  const { theme, setTheme } = useThemeContext();
+
   return (
     <Container>
       <Content>
@@ -226,6 +230,14 @@ function Header(props) {
                 <a>Sign Out</a>
               </SignOut>
             </User>
+            <Button
+              onClick={() => setTheme((prev) => !prev)}
+              sx={{ color: "white" }}
+              color={theme ? "secondary" : "primary"}
+              variant="contained"
+            >
+              {theme ? "Inspire" : "Calm"}
+            </Button>
           </NavListWrap>
         </Nav>
       </Content>

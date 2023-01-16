@@ -8,6 +8,19 @@ import { connect } from "react-redux";
 import Post from "./main-sections/Post";
 import { Toaster } from "react-hot-toast";
 import { PostContextProvider } from "../context/postContext";
+import { ThemeContextProvider } from "../context/themeContext";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
+const theme = createTheme({
+  palette: {
+    secondary: {
+      main: "#ADE792",
+    },
+    primary: {
+      main: "#0081C9",
+    },
+  },
+});
 
 function App(props) {
   useEffect(() => {
@@ -16,23 +29,27 @@ function App(props) {
 
   return (
     <div className="App">
-      <PostContextProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/">
-              <Login />
-            </Route>
-            <Route path="/feed">
-              <Header />
-              <Home />
-            </Route>
-            <Route path="/post/:id">
-              <Header />
-              <Post />
-            </Route>
-          </Switch>
-        </Router>
-      </PostContextProvider>
+      <ThemeProvider theme={theme}>
+        <PostContextProvider>
+          <ThemeContextProvider>
+            <Router>
+              <Switch>
+                <Route exact path="/">
+                  <Login />
+                </Route>
+                <Route path="/feed">
+                  <Header />
+                  <Home />
+                </Route>
+                <Route path="/post/:id">
+                  <Header />
+                  <Post />
+                </Route>
+              </Switch>
+            </Router>
+          </ThemeContextProvider>
+        </PostContextProvider>
+      </ThemeProvider>
       <Toaster />
     </div>
   );

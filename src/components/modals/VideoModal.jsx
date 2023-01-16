@@ -1,11 +1,13 @@
-import { Container, Content, Header, PostButton } from "./style";
+import { Container, Content, Header } from "./style";
 import { Box, Button, Divider } from "@mui/material";
 import { connect } from "react-redux";
 import { useState } from "react";
 import { usePostContext } from "../../context/postContext";
+import { useThemeContext } from "../../context/themeContext";
 
 function VideoModal({ clickHandler, showModal, setShowPostModal }) {
   const [video, setVideo] = useState(null);
+  const { theme } = useThemeContext();
 
   const { setVideoFile, resetPostContext, isCreatingPost } = usePostContext();
 
@@ -49,6 +51,7 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                   />
                 ) : (
                   <Button
+                    color={theme ? "secondary" : "primary"}
                     component="label"
                     sx={{ textTransform: "none", width: "max-content" }}
                   >
@@ -77,6 +80,7 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
               gap={2}
             >
               <Button
+                color={theme ? "secondary" : "primary"}
                 onClick={(e) => {
                   if (isCreatingPost) {
                     setShowPostModal("open");
@@ -86,12 +90,13 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                     reset(e);
                   }
                 }}
-                sx={{ borderRadius: "15px" }}
                 variant="outlined"
               >
                 {isCreatingPost ? "Back" : "Cancel"}
               </Button>
-              <PostButton
+              <Button
+                color={theme ? "secondary" : "primary"}
+                variant="contained"
                 onClick={(e) => {
                   if (isCreatingPost) {
                     setVideoFile(video);
@@ -105,7 +110,7 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                 disabled={!video}
               >
                 {isCreatingPost ? "Done" : "Post"}
-              </PostButton>
+              </Button>
             </Box>
           </Content>
         </Container>

@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-import ReactPlayer from "react-player";
 import { connect } from "react-redux";
 import { postArticleAPI } from "../../action";
-import { Box, IconButton, CircularProgress } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { Box, Button, CircularProgress } from "@mui/material";
 import Firebase from "firebase";
 import {
-  Container,
-  Header,
-  Content,
-  SharedContent,
-  UploadImage,
-  AttachAsset,
-  Editor,
   AssetButton,
-  PostButton,
+  AttachAsset,
+  Container,
+  Content,
+  Editor,
+  Header,
   ShareCreation,
+  SharedContent,
   UserInfo,
 } from "./style";
 import toast from "react-hot-toast";
@@ -23,6 +19,7 @@ import Article from "../Article/Article";
 import validURL from "../../utils/validUrl";
 import { getArticleById } from "../../firebase/queries";
 import { usePostContext } from "../../context/postContext";
+import { useThemeContext } from "../../context/themeContext";
 
 function PostalModal({
   clickHandler,
@@ -35,6 +32,7 @@ function PostalModal({
   const [editorText, setEditorText] = useState("");
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { theme } = useThemeContext();
 
   const { imageFile, videoFile, resetPostContext, setIsCreatingPost } =
     usePostContext();
@@ -188,12 +186,14 @@ function PostalModal({
                   <img src="/images/share-video.svg" alt="" />
                 </AssetButton>
               </AttachAsset>
-              <PostButton
+              <Button
+                color={theme ? "secondary" : "primary"}
+                variant="contained"
                 disabled={!editorText ? true : false}
                 onClick={(event) => postArticle(event)}
               >
                 Post
-              </PostButton>
+              </Button>
             </ShareCreation>
           </Content>
         </Container>
