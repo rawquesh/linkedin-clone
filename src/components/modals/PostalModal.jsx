@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { postArticleAPI } from "../../action";
-import { Box, Button, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import Firebase from "firebase";
 import {
   AssetButton,
@@ -32,6 +39,7 @@ function PostalModal({
 }) {
   const [editorText, setEditorText] = useState("");
   const [article, setArticle] = useState(null);
+  const [urls, setUrls] = useState([]);
   const [loading, setLoading] = useState(false);
   const { theme } = useThemeContext();
 
@@ -42,8 +50,21 @@ function PostalModal({
     const postLink = e.clipboardData.getData("text");
 
     if (validURL(postLink)) {
-      setLoading(true);
       const url = new URL(postLink);
+
+      if (process.env.REACT_APP_HOST !== url.host) {
+        setUrls((prev) => {
+          if (prev.find((currentUrl) => currentUrl.href === url.href)) {
+            return prev;
+          }
+
+          return [...prev, url];
+        });
+        return;
+      }
+
+      setLoading(true);
+
       let id = url.pathname.split("/")[2];
 
       id = !!id ? id : "unknown";
@@ -134,6 +155,53 @@ function PostalModal({
                       <CircularProgress />
                     </Box>
                   )}
+
+                  {urls.length > 0 && (
+                    <Box display="flex" flexDirection="column" gap={1}>
+                      {urls.map((url, index) => (
+                        <Box
+                          borderRadius={2}
+                          bgcolor="#EEEEF0"
+                          alignItems="center"
+                          px={2}
+                          py={1}
+                          display="flex"
+                        >
+                          <a
+                            style={{
+                              flex: 1,
+                              textDecoration: "none",
+                              color: "black",
+                              fontSize: "14px",
+                            }}
+                            href={url.href}
+                            target="_blank"
+                          >
+                            <Box display="flex" flexDirection="column">
+                              <Typography variant="body1">
+                                {url.host}
+                              </Typography>
+                              <Typography fontSize="11px" variant="body2">
+                                {url.href}
+                              </Typography>
+                            </Box>
+                          </a>
+                          <IconButton
+                            onClick={() =>
+                              setUrls((prevState) =>
+                                [...prevState].filter(
+                                  (_, currentIndex) => currentIndex !== index
+                                )
+                              )
+                            }
+                          >
+                            <CloseIcon />
+                          </IconButton>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+
                   {article && !loading && (
                     <Box>
                       <Article preview article={article} />

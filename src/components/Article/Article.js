@@ -52,14 +52,18 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
   };
 
   const onShareClick = () => {
-    navigator.clipboard.writeText(`https://www.provider.com/post/${id}`).then(
-      () => {
-        toast.success("Link copied to clipboard.", { position: "bottom-left" });
-      },
-      () => {
-        toast.error("Failed to copy", { position: "bottom-left" });
-      }
-    );
+    navigator.clipboard
+      .writeText(`https://${process.env.REACT_APP_HOST}/post/${id}`)
+      .then(
+        () => {
+          toast.success("Link copied to clipboard.", {
+            position: "bottom-left",
+          });
+        },
+        () => {
+          toast.error("Failed to copy", { position: "bottom-left" });
+        }
+      );
   };
 
   return (
