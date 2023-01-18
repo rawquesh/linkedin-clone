@@ -64,11 +64,9 @@ export function Comment({
       pinned: false,
       approved: false,
       content: text,
-      // post: {
-      //   id: post.id,
-      //   title: post.title,
-      //   category: post.category,
-      // },
+      post: {
+        id: post.id,
+      },
       user: {
         id: auth.currentUser?.uid,
         name: auth.currentUser?.displayName ?? "Unknown",
@@ -152,8 +150,8 @@ export function Comment({
                   Reply
                 </Typography>
               </Box>
-              <Box gap={1} display="flex">
-                <IconButton sx={{ padding: "5px" }}>
+              <Box alignItems="center" display="flex">
+                <IconButton onClick={onClickLike} sx={{ padding: "5px" }}>
                   <FavoriteIcon sx={{ fontSize: "15px" }} />
                 </IconButton>
                 {likedBy.length > 0 && (
@@ -165,8 +163,12 @@ export function Comment({
         </Box>
       </Box>
       {replyBoxShow && (
-        <Box mb={2} width="100%" marginLeft={subcomment ? "25px" : 0}>
-          <MessageBox />
+        <Box
+          mb={2}
+          width={!subcomment ? "calc(100% - 25px)" : "100%"}
+          marginLeft="25px"
+        >
+          <MessageBox onClick={onPressReply} />
         </Box>
       )}
     </Box>

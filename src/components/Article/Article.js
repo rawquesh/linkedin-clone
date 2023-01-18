@@ -17,15 +17,121 @@ import MessageBox from "../MessageBox";
 import comments from "../../mocks/comments";
 import { connect } from "react-redux";
 import toast from "react-hot-toast";
+import { remove as removeLodash } from "lodash";
 
 function Article({ article, onLikeClick, user, id, preview = false }) {
   const [commentsFromDB, setCommentsFromDB] = useState([]);
 
+  let unsubscription = [];
+
   useEffect(() => {
     if (!preview) {
-      setCommentsFromDB(comments);
+      fetchPostComments();
     }
+
+    return () => {
+      if (unsubscription.length !== 0) {
+        unsubscription.forEach((unsub) => {
+          unsub();
+        });
+      }
+    };
   }, [preview]);
+
+  async function fetchPostComments() {
+    const id = article?.id ?? "newid";
+    // const q = query(collection(db, "comments"), where("post.id", "==", id));
+
+    const unsubscribe = db
+      .collection("comments")
+      .where("post.id", "==", id)
+      .onSnapshot((doc) => {
+        let allComments = doc.docs.map((d) => ({
+          data: d.data(),
+          id: d.id,
+        }));
+
+        removeLodash(allComments, (value) => {
+          return (
+            !value.data.approved && value.data.user.id != auth.currentUser.uid
+          );
+        });
+
+        let TopLevelComments = allComments.filter(
+          (cfdb) => cfdb.data.parentCommentId === ""
+        );
+
+        let remainingComments = allComments.filter(
+          (ac) => ac.data.parentCommentId !== ""
+        );
+
+        remainingComments.forEach((element, idx) => {
+          let i = TopLevelComments.findIndex(
+            (tlc) => tlc.id === element.data.parentCommentId
+          );
+          if (i !== -1) {
+            if (!TopLevelComments[i].data.subcomments) {
+              TopLevelComments[i].data["subcomments"] = [];
+            }
+            TopLevelComments[i].data.subcomments = [
+              element,
+              ...TopLevelComments[i].data.subcomments,
+            ];
+            element.addedAsChild = true;
+          }
+        });
+
+        TopLevelComments.sort(
+          (a, b) => a.data.dateCreated.toDate() - b.data.dateCreated.toDate()
+        );
+
+        setCommentsFromDB(TopLevelComments.reverse());
+      });
+
+    // const unsubscribe = onSnapshot(q, (snapshot) => {
+    //   let allComments = snapshot.docs.map((d) => ({
+    //     data: d.data(),
+    //     id: d.id,
+    //   }));
+    //
+    //   removeLodash(allComments, (value) => {
+    //     return (
+    //       !value.data.approved && value.data.user.id != auth.currentUser.uid
+    //     );
+    //   });
+    //
+    //   let TopLevelComments = allComments.filter(
+    //     (cfdb) => cfdb.data.parentCommentId === ""
+    //   );
+    //
+    //   let remainingComments = allComments.filter(
+    //     (ac) => ac.data.parentCommentId !== ""
+    //   );
+    //
+    //   remainingComments.forEach((element, idx) => {
+    //     let i = TopLevelComments.findIndex(
+    //       (tlc) => tlc.id === element.data.parentCommentId
+    //     );
+    //     if (i !== -1) {
+    //       if (!TopLevelComments[i].data.subcomments) {
+    //         TopLevelComments[i].data["subcomments"] = [];
+    //       }
+    //       TopLevelComments[i].data.subcomments = [
+    //         element,
+    //         ...TopLevelComments[i].data.subcomments,
+    //       ];
+    //       element.addedAsChild = true;
+    //     }
+    //   });
+    //
+    //   TopLevelComments.sort(
+    //     (a, b) => a.data.dateCreated.toDate() - b.data.dateCreated.toDate()
+    //   );
+    //
+    //   setCommentsFromDB(TopLevelComments.reverse());
+    // });
+    unsubscription.push(unsubscribe);
+  }
 
   const onPressSend = async (text) => {
     if (text.length === 0) return;
@@ -36,11 +142,9 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
       pinned: false,
       approved: false,
       content: text,
-      // post: {
-      //   id: article.id,
-      //   title: article.title,
-      //   category: article.categories[0],
-      // },
+      post: {
+        id: article.id,
+      },
       user: {
         id: auth.currentUser?.uid,
         name: auth.currentUser?.displayName ?? "Unknown",

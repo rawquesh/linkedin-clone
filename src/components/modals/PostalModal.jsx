@@ -88,6 +88,7 @@ function PostalModal({
     setEditorText("");
     setArticle(null);
     setLoading(false);
+    setUrls([]);
     resetPostContext();
     clickHandler(event);
   };
