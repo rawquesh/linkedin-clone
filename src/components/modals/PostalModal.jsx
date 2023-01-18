@@ -214,7 +214,7 @@ function PostalModal({
                         height: "100%",
                         width: "100%",
                       }}
-                      src={imageFile}
+                      src={URL.createObjectURL(imageFile)}
                       alt="list"
                     />
                   )}
@@ -227,7 +227,7 @@ function PostalModal({
                         height: "100%",
                         width: "100%",
                       }}
-                      src={videoFile}
+                      src={URL.createObjectURL(videoFile)}
                     />
                   )}
                 </Box>

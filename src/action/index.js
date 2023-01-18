@@ -136,7 +136,7 @@ export function getArticlesAPI() {
     db.collection("articles")
       .orderBy("actor.date", "desc")
       .onSnapshot((snapshot) => {
-        payload = snapshot.docs.map((doc) => doc.data());
+        payload = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
         id = snapshot.docs.map((doc) => doc.id);
         dispatch(getArticles(payload, id));
       });

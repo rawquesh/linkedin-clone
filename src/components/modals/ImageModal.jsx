@@ -53,7 +53,7 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                         height: "100%",
                         width: "100%",
                       }}
-                      src={images[currentImage]}
+                      src={URL.createObjectURL(images[currentImage])}
                       alt="list"
                     />
                     <button
@@ -117,17 +117,8 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                       onChange={(e) => {
                         setImages((prev) =>
                           prev
-                            ? [
-                                ...Array.from(e.target.files).map((file) =>
-                                  URL.createObjectURL(file)
-                                ),
-                                ...prev,
-                              ]
-                            : [
-                                ...Array.from(e.target.files).map((file) =>
-                                  URL.createObjectURL(file)
-                                ),
-                              ]
+                            ? [...Array.from(e.target.files), ...prev]
+                            : [...Array.from(e.target.files)]
                         );
                         e.target.value = null;
                       }}

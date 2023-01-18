@@ -47,7 +47,7 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                       height: "100%",
                       width: "100%",
                     }}
-                    src={video}
+                    src={URL.createObjectURL(video)}
                   />
                 ) : (
                   <Button
@@ -60,7 +60,7 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                       accept="video/*"
                       type="file"
                       onChange={(e) => {
-                        setVideo(URL.createObjectURL(e.target.files[0]));
+                        setVideo(e.target.files[0]);
                         e.target.value = null;
                       }}
                       hidden
