@@ -211,9 +211,6 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
                   <span>{article?.likes.count}</span>
                 </button>
               </li>
-              <li>
-                <a>{article.comments} comments (currently not working)</a>
-              </li>
             </>
           )}
         </SocialCount>
