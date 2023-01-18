@@ -4,8 +4,16 @@ import { connect } from "react-redux";
 import { useState } from "react";
 import { usePostContext } from "../../context/postContext";
 import { useThemeContext } from "../../context/themeContext";
+import Firebase from "firebase";
+import { postArticleAPI } from "../../action";
 
-function VideoModal({ clickHandler, showModal, setShowPostModal }) {
+function VideoModal({
+  clickHandler,
+  showModal,
+  setShowPostModal,
+  postArticleToFirebase,
+  user,
+}) {
   const [video, setVideo] = useState(null);
   const { theme } = useThemeContext();
 
@@ -16,6 +24,23 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
     setVideo(null);
     resetPostContext();
   };
+
+  function postArticle(event) {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    const payload = {
+      video: video,
+      image: "",
+      description: "",
+      user: user,
+      timestamp: Firebase.firestore.Timestamp.now(),
+    };
+
+    postArticleToFirebase(payload);
+    reset(event);
+  }
 
   return (
     <>
@@ -104,7 +129,8 @@ function VideoModal({ clickHandler, showModal, setShowPostModal }) {
                     setShowPostModal("open");
                     clickHandler(e);
                   } else {
-                    // add to db
+                    postArticle(e);
+                    reset(e);
                   }
                 }}
                 disabled={!video}
@@ -125,4 +151,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(VideoModal);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postArticleToFirebase: (payload) => dispatch(postArticleAPI(payload)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoModal);

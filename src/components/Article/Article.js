@@ -192,7 +192,7 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
           <SharedImage>
             <a>
               {!article.sharedImg && article.video ? (
-                <ReactPlayer width={"100%"} url={article.video} />
+                <ReactPlayer controls width={"100%"} url={article.video} />
               ) : (
                 article.sharedImg && <img src={article.sharedImg} alt="" />
               )}

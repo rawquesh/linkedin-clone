@@ -88,22 +88,38 @@ export function postArticleAPI(payload) {
       );
     } else if (payload.video) {
       dispatch(setLoading(true));
-      db.collection("articles").add({
-        actor: {
-          description: payload.user.email,
-          title: payload.user.displayName,
-          date: payload.timestamp,
-          image: payload.user.photoURL,
+
+      const upload = storage
+        .ref(`videos/${payload.video.name}`)
+        .put(payload.video);
+      upload.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         },
-        video: payload.video,
-        sharedImg: "",
-        likes: {
-          count: 0,
-          whoLiked: [],
-        },
-        comments: 0,
-        description: payload.description,
-      });
+        (err) => alert(err),
+        async () => {
+          const downloadURL = await upload.snapshot.ref.getDownloadURL();
+          db.collection("articles").add({
+            actor: {
+              description: payload.user.email,
+              title: payload.user.displayName,
+              date: payload.timestamp,
+              image: payload.user.photoURL,
+            },
+            video: downloadURL,
+            sharedImg: "",
+            likes: {
+              count: 0,
+              whoLiked: [],
+            },
+            comments: 0,
+            description: payload.description,
+          });
+          dispatch(setLoading(false));
+        }
+      );
       dispatch(setLoading(false));
     } else if (payload.image === "" && payload.video === "") {
       dispatch(setLoading(true));

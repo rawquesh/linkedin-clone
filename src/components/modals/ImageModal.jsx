@@ -2,12 +2,20 @@ import { Container, Content, Header } from "./style";
 import { Box, Button, Divider } from "@mui/material";
 import { connect } from "react-redux";
 import { useState } from "react";
+import Firebase from "firebase";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { usePostContext } from "../../context/postContext";
 import { useThemeContext } from "../../context/themeContext";
+import { postArticleAPI } from "../../action";
 
-function ImageModal({ clickHandler, showModal, setShowPostModal }) {
+function ImageModal({
+  clickHandler,
+  showModal,
+  setShowPostModal,
+  user,
+  postArticleToFirebase,
+}) {
   const [images, setImages] = useState(null);
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -21,6 +29,23 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
     resetPostContext();
     setImages(null);
   };
+
+  function postArticle(event) {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    const payload = {
+      image: images[0],
+      video: "",
+      description: "",
+      user: user,
+      timestamp: Firebase.firestore.Timestamp.now(),
+    };
+
+    postArticleToFirebase(payload);
+    reset(event);
+  }
 
   return (
     <>
@@ -162,7 +187,8 @@ function ImageModal({ clickHandler, showModal, setShowPostModal }) {
                     setShowPostModal("open");
                     clickHandler(e);
                   } else {
-                    // add to db
+                    postArticle(e);
+                    reset(e);
                   }
                 }}
                 disabled={!images}
@@ -183,4 +209,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, null)(ImageModal);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postArticleToFirebase: (payload) => dispatch(postArticleAPI(payload)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageModal);
