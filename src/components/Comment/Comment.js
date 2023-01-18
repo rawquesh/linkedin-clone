@@ -1,7 +1,6 @@
 import {
   Avatar,
   Box,
-  Button,
   IconButton,
   Typography,
   useMediaQuery,
@@ -9,7 +8,6 @@ import {
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import React, { useState } from "react";
-import styled from "styled-components";
 import { remove as removeLodash } from "lodash";
 import timeSince from "../../utils/timeSince";
 import db, { auth } from "../../firebase";
@@ -80,12 +78,6 @@ export function Comment({
     setReplyBoxShow(false);
   };
 
-  const onClickPin = async () => {
-    onPressPin();
-  };
-  const onClickUnPin = async () => {
-    onPressUnPin();
-  };
   const onClickLike = async () => {
     // const sfDocRef = doc(db, "comments", id);
 
