@@ -3,23 +3,23 @@ import { Redirect, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import Article from "../Article/Article";
 import { Container, Content } from "./style";
-import { updateArticleAPI } from "../../action";
-import articleMock from "../../mocks/article";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { getArticleById } from "../../firebase/queries";
+import { useThemeContext } from "../../context/themeContext";
 
-function Post({ onArticleLike, user }) {
-  const [loading, setLoading] = useState(false);
-  const [article, setArticle] = useState(articleMock);
+function Post({ user }) {
+  const [loading, setLoading] = useState(true);
+  const [article, setArticle] = useState(null);
+  const { theme } = useThemeContext();
 
   const { id } = useParams();
 
   useEffect(() => {
     getArticleById(id).then((querySnapshot) => {
-      const data = querySnapshot.docs[0]?.data();
+      const data = querySnapshot.data();
 
       if (data) {
-        setArticle(article);
+        setArticle(data);
       }
 
       setLoading(false);
@@ -34,41 +34,23 @@ function Post({ onArticleLike, user }) {
     return <Redirect to="/" />;
   }
 
-  function likeHandler(event, article, id) {
-    event.preventDefault();
-    let currentLikes = article.likes.count;
-    let whoLiked = article.likes.whoLiked;
-    let userIndex = whoLiked.indexOf(user.email);
-
-    if (userIndex >= 0) {
-      currentLikes--;
-      whoLiked.splice(userIndex, 1);
-    } else if (userIndex === -1) {
-      currentLikes++;
-      whoLiked.push(user.email);
-    }
-
-    const payload = {
-      update: {
-        likes: {
-          count: currentLikes,
-          whoLiked: whoLiked,
-        },
-      },
-      id: "6u9DZyCmBlRioPlH1JGo",
-    };
-
-    onArticleLike(payload);
-  }
-
   return (
-    <Container>
-      <Box my={4} maxWidth="1128px" sx={{ marginX: "auto" }}>
+    <Container
+      style={{
+        flex: 1,
+        backgroundPosition: "center",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+        backgroundImage: `url("/images/wellness-${
+          theme ? "forest" : "ocean"
+        }.jpg")`,
+      }}
+    >
+      <Box my={4} maxWidth="900px" sx={{ marginX: "auto" }}>
         <Content>
-          {loading && <img src="/images/spin-loader.gif" alt="" />}
-          {article && !loading && (
-            <Article onLikeClick={likeHandler} article={article} id={id} />
-          )}
+          {loading && <CircularProgress color="secondary" />}
+          {article && <Article preview article={article} id={id} />}
         </Content>
       </Box>
     </Container>
@@ -81,8 +63,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({
-  onArticleLike: (payload) => dispatch(updateArticleAPI(payload)),
-});
+const mapDispatchToProps = () => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

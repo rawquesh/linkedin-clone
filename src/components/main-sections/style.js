@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   grid-area: main;
+
+  transition: all ease-in-out 0.15s;
 `;
 
 export const CommonBox = styled.div`

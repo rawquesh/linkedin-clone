@@ -38,6 +38,7 @@ function Home({ user }) {
   return (
     <Container
       style={{
+        flex: 1,
         backgroundPosition: "center",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",

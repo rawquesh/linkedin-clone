@@ -170,6 +170,8 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
       );
   };
 
+  console.log(article);
+
   return (
     <Box>
       <ArticleContainer>

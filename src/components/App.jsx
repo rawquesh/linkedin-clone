@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import { PostContextProvider } from "../context/postContext";
 import { ThemeContextProvider } from "../context/themeContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Box } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -38,12 +39,16 @@ function App(props) {
                   <Login />
                 </Route>
                 <Route path="/feed">
-                  <Header />
-                  <Home />
+                  <Box minHeight="100vh" display="flex" flexDirection="column">
+                    <Header />
+                    <Home />
+                  </Box>
                 </Route>
                 <Route path="/post/:id">
-                  <Header />
-                  <Post />
+                  <Box minHeight="100vh" display="flex" flexDirection="column">
+                    <Header />
+                    <Post />
+                  </Box>
                 </Route>
               </Switch>
             </Router>
