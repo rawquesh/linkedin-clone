@@ -1,5 +1,6 @@
 import ReactPlayer from "react-player";
 import React, { useEffect, useState } from "react";
+import Linkify from "react-linkify";
 import {
   ArticleContainer,
   Description,
@@ -177,8 +178,6 @@ function Article({
       );
   };
 
-  console.log(article);
-
   return (
     <Box>
       <ArticleContainer>
@@ -196,7 +195,9 @@ function Article({
             </div>
           </a>
         </SharedActor>
-        <Description>{article.description}</Description>
+        <Description>
+          <Linkify>{article.description}</Linkify>
+        </Description>
         {(article.sharedImg || article.video) && (
           <SharedImage>
             <a>
