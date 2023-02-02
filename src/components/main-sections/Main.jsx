@@ -37,23 +37,51 @@ function Main(props) {
 
   function likeHandler(event, article, id) {
     event.preventDefault();
-    let currentLikes = article.likes.count;
+    let currentThanks = article.likes.count;
     let whoLiked = article.likes.whoLiked;
     let user = props.user.email;
     let userIndex = whoLiked.indexOf(user);
 
     if (userIndex >= 0) {
-      currentLikes--;
+      currentThanks--;
       whoLiked.splice(userIndex, 1);
     } else if (userIndex === -1) {
-      currentLikes++;
+      currentThanks++;
       whoLiked.push(user);
     }
 
     const payload = {
       update: {
         likes: {
-          count: currentLikes,
+          count: currentThanks,
+          whoLiked: whoLiked,
+        },
+      },
+      id: id,
+    };
+
+    props.likeHandler(payload);
+  }
+
+  function thanksHandler(event, article, id) {
+    event.preventDefault();
+    let currentThanks = article?.thanks?.count || 0;
+    let whoLiked = article?.thanks?.whoLiked || [];
+    let user = props.user.email;
+    let userIndex = whoLiked.indexOf(user);
+
+    if (userIndex >= 0) {
+      currentThanks--;
+      whoLiked.splice(userIndex, 1);
+    } else if (userIndex === -1) {
+      currentThanks++;
+      whoLiked.push(user);
+    }
+
+    const payload = {
+      update: {
+        thanks: {
+          count: currentThanks,
           whoLiked: whoLiked,
         },
       },
@@ -101,6 +129,7 @@ function Main(props) {
         {props.articles.length > 0 &&
           props.articles.map((article, index) => (
             <Article
+              thanksHandler={thanksHandler}
               onLikeClick={likeHandler}
               key={props.ids[index]}
               article={article}

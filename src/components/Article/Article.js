@@ -19,7 +19,14 @@ import { connect } from "react-redux";
 import toast from "react-hot-toast";
 import { remove as removeLodash } from "lodash";
 
-function Article({ article, onLikeClick, user, id, preview = false }) {
+function Article({
+  article,
+  onLikeClick,
+  user,
+  id,
+  preview = false,
+  thanksHandler,
+}) {
   const [commentsFromDB, setCommentsFromDB] = useState([]);
 
   let unsubscription = [];
@@ -202,25 +209,36 @@ function Article({ article, onLikeClick, user, id, preview = false }) {
           </SharedImage>
         )}
         <SocialCount>
+          {article?.thanks?.count > 0 && (
+            <Box
+              display="flex"
+              color="blue"
+              alignItems="center"
+              fontSize="12px"
+            >
+              <img src="/images/pray-icon-active.svg" alt="" />
+              <span>{article?.thanks.count}</span>
+            </Box>
+          )}
           {article.likes.count > 0 && (
-            <>
-              <li>
-                <button>
-                  <img
-                    src="https://static-exp1.licdn.com/sc/h/d310t2g24pvdy4pt1jkedo4yb"
-                    alt=""
-                  />
-                  <span>{article?.likes.count}</span>
-                </button>
-              </li>
-            </>
+            <Box color="red" display="flex" alignItems="center" fontSize="12px">
+              <FavoriteBorderIcon />
+              <span>{article?.likes.count}</span>
+            </Box>
           )}
         </SocialCount>
         {!preview && (
           <>
             <SocialActions>
-              <button>
-                <img src="/images/pray-icon.svg" alt="" />
+              <button onClick={(event) => thanksHandler(event, article, id)}>
+                <img
+                  src={
+                    article?.thanks?.whoLiked.indexOf(user.email) >= 0
+                      ? "/images/pray-icon-active.svg"
+                      : "/images/pray-icon.svg"
+                  }
+                  alt=""
+                />
                 <span>Thanks</span>
               </button>
               <button

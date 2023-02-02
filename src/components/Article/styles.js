@@ -96,6 +96,7 @@ export const SocialCount = styled.ul`
   overflow: auto;
   margin: 0 16px;
   padding: 8px 0;
+  gap: 10px;
   border-bottom: 1px solid #e9efdf;
   color: rgba(0, 0, 0, 0.6);
   list-style: none;
