@@ -102,7 +102,7 @@ function Right() {
               <Avatar />
             </a>
             <div>
-              <span>#linkedin</span>
+              <span>#wellness</span>
               <button>Follow</button>
             </div>
           </li>

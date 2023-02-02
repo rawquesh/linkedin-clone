@@ -1,4 +1,4 @@
-# LinkedIn Clone
+# Wellness
 
 **_Built using React JS, Redux, Firebase & Styled-Components_** within a week. My first project after learning React JS referencing a tutorial on YouTube by _'Clever Programmer'_. Added some features apart from the tutorial on my own like:
 

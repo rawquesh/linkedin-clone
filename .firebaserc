@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "linkedin-clone-39db1"
-  }
+  },
+  "targets": {
+    "linkedin-clone-39db1": {
+      "hosting": {
+        "wellness-1": [
+          "wellness-1"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
