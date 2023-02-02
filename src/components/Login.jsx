@@ -153,7 +153,7 @@ function Login(props) {
       {props.user && <Redirect to="/feed" />}
       <Nav>
         <a href="/">
-          <img src="/images/login-logo.svg" alt="" />
+          <img style={{borderRadius : "5px"}} height={"80px"} src="/images/logo.png" alt="" />
         </a>
         <div>
           <Join>Join Now</Join>

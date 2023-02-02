@@ -199,7 +199,7 @@ function Header(props) {
       <Content>
         <Logo>
           <Link to="/feed">
-            <img src="/images/home-logo.svg" alt="" />
+            <img style={{borderRadius : "5px"}} height={"50px"} src="/images/logo.png" alt="" />
           </Link>
         </Logo>
         <Search>
